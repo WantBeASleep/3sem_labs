@@ -39,6 +39,16 @@ class ArraySequence : public Sequence<T>
     }
 
     int GetLength() const override {return array->GetSize();}
+
+    //@ INFO
+    bool Contains(T item) const override
+    {
+      for (int i = 0; i < array->GetSize(); i++)
+      {
+        if (array->Get(i) == item) return true;
+      }
+      return false;
+    }
     
     //Операции
     void Append(T item) override

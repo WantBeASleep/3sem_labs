@@ -38,6 +38,9 @@ class LinkedListSequence : public Sequence<T>
 
     int GetLength() const override {return list->GetLength();}
 
+    //@ INFO
+    bool Contains(T item) const override {return false;}
+
     // Операции
     void Append(T item) override {list->Append(item);}
 

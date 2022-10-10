@@ -27,7 +27,7 @@ class Node
 template <typename T>
 class AVLTree
 {
-  private:
+  protected:
     Node<T>* root;
     int size;
         
@@ -113,12 +113,12 @@ class AVLTree
       return Balance(node);
     }
 
-    Node<T>* Remove(Node<T>* node, T k)
+    Node<T>* RemovePrivate(Node<T>* node, T key)
     {
       if (!node) return nullptr;
       
-      if (k < node->key) node->left = Remove(node->left, k);
-      else if (k > node->key) node->right = Remove(node->right, k);
+      if (node->key > key) node->left = RemovePrivate(node->left, key);
+      else if (node->key < key) node->right = RemovePrivate(node->right, key);
       else
       {
         Node<T>* LeftSubTr = node->left;
@@ -145,10 +145,10 @@ class AVLTree
 
     public:
       AVLTree() {root = nullptr; size = 0;}
-      ~AVLTree() {while (root) root = Remove(root, root->key);}
+      ~AVLTree() {while (root) root = RemovePrivate(root, root->key);}
       
-      void Append(T key) {root = Insert(root, key);}
-
+      int GetCount() const {return size;}
+      
       Sequence<T>* GetSequence() const
       {
         Sequence<T>* Seq = new ArraySequence<T>();
@@ -156,4 +156,8 @@ class AVLTree
         return Seq;
       }
 
+      void Add(T key) {root = Insert(root, key);}
+
+      void Remove(T key) {root = RemovePrivate(root, key);}
+            
 };
