@@ -1,8 +1,8 @@
 #pragma once
 
 #include <string>
-#include "../sorts.hpp"
-#include "../sequence.hpp"
+#include "../structs/sequence/sequence.hpp"
+#include "../structs/sort/isort.hpp"
 
 using namespace std;
 

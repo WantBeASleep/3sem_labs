@@ -1,3 +1,0 @@
-2.1 - Gistagramm
-2.2 - Discharged vector/matrix
-2.4 - Alphabet indicator

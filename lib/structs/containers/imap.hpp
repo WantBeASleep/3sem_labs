@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../sequence.hpp"
+#include "../sequence/sequence.hpp"
 
 using namespace std;
 
@@ -8,7 +8,7 @@ template <typename TKey, typename TElement>
 class IMap
 {
   public:
-    ~IMap() {}
+    virtual ~IMap() {}
 
     //@ ПОЛУЧЕНИЕ
     virtual int GetCount() const = 0;

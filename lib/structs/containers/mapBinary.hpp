@@ -1,10 +1,9 @@
 #pragma once
 
-#include "../../sequence.hpp"
+#include "../sequence/sequence.hpp"
+#include "../sequence/arraySequence.hpp"
 #include "../trees/collectionBinaryTree.hpp"
 #include "imap.hpp"
-
-#include <iostream>
 
 using namespace std;
 
@@ -15,6 +14,8 @@ class AVLMap : public IMap<TKey, TElement>
     CollectionTree<TKey, TElement> data;
 
   public:
+    ~AVLMap() {}
+    
     //@ ПОЛУЧЕНИЕ 
     int GetCount() const override {return data.GetCount();}
 

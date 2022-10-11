@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include "../sequence.hpp"
+#include "../structs/sequence/sequence.hpp"
 
 using namespace std;
 

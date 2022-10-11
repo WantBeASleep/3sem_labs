@@ -3,7 +3,8 @@
 #include <string>
 #include <fstream>
 
-#include "../sequence.hpp"
+#include "../structs/sequence/sequence.hpp"
+#include "../structs/sequence/arraySequence.hpp"
 
 using namespace std;
 

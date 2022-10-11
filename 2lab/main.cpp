@@ -8,7 +8,9 @@ using namespace std;
 
 int main()
 {
-  Sequence<string>* Options = parse_seq("cfg/tasks.txt");
+  string opt_values[3] = {"2.1 - Gistagramm", "2.2 - Discharged vector/matrix", 
+    "2.4 - Alphabet indicator"};
+  Sequence<string>* Options = new ArraySequence<string>(opt_values, 3);
   
   int res = ViewAnsMenu(Options);
   switch (res)

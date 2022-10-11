@@ -1,8 +1,8 @@
 #pragma once
 
 #include <algorithm>
-
-#include "../../sequence.hpp"
+#include "../sequence/sequence.hpp"
+#include "../sequence/arraySequence.hpp"
 
 using namespace std;
 
