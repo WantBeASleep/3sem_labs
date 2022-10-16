@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../sequence/sequence.hpp"
 #include "../sequence/arraySequence.hpp"
 #include "../trees/collectionBinaryTree.hpp"
@@ -14,14 +13,13 @@ class AVLMap : public IMap<TKey, TElement>
     CollectionTree<TKey, TElement> data;
 
   public:
-    ~AVLMap() {}
     
     //@ ПОЛУЧЕНИЕ 
     int GetCount() const override {return data.GetCount();}
 
     int GetCapacity() const override {return -1;}
 
-    TElement Get(TKey key) const override {return data.Get(key);}
+    TElement& Get(TKey const &key) const override {return data.Get(key);}
 
     Sequence<TKey>* GetKeys() const override
     {
@@ -46,7 +44,7 @@ class AVLMap : public IMap<TKey, TElement>
     }
 
     //@ INFO
-    bool ContainsKey(TKey key) const override
+    bool ContainsKey(TKey const &key) const override
     {
       Sequence<TKey>* Keys = GetKeys();
       bool res = Keys->Contains(key);
@@ -55,8 +53,8 @@ class AVLMap : public IMap<TKey, TElement>
     }
 
     //@ ОПЕРАЦИИ
-    void Add(TKey key, TElement element) override {data.Add(key, element);}
+    void Add(TKey const &key, TElement const &element) override {data.Add(key, element);}
 
-    void Remove(TKey key) override {data.Remove(key);}
+    void Remove(TKey const &key) override {data.Remove(key);}
     
 };

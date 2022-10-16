@@ -17,14 +17,17 @@ class Sequence
     virtual int GetLength() const = 0;
 
     //@ INFO
-    virtual bool Contains(T item) const = 0;
+    virtual bool Contains(T const &item) const = 0;
     
     //Операции
-    virtual void Append(T item) = 0;
-    virtual void Prepend(T item) = 0;
-    virtual void InsertAt(int index, T item) = 0;
-    virtual void Set(int index, T item) = 0;
+    virtual void Append(T const &item) = 0;
+    virtual void Prepend(T const &item) = 0;
+    virtual void InsertAt(int index, T const &item) = 0;
+    virtual void Set(int index, T const &item) = 0;
     virtual void Swap(int index1, int index2) = 0;
     virtual void DoEmpty() = 0;
     virtual Sequence<T>* Concat(Sequence<T>* seq) = 0;
+
+    // OPER.RU
+    
 };

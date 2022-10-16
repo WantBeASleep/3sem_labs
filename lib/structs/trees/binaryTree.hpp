@@ -1,5 +1,4 @@
 #pragma once
-
 #include <algorithm>
 #include "../sequence/sequence.hpp"
 #include "../sequence/arraySequence.hpp"
@@ -12,9 +11,9 @@ class Node
   public:
     T key;
     int height;
-    Node<T>* left, *right;
+    Node<T> *left, *right;
 
-    Node(T key) 
+    Node(T const &key) 
     {
       this->key = key;
       height = 1;
@@ -84,21 +83,21 @@ class AVLTree
       return node;
     }
 
-    Node<T>* Insert(Node<T>* node, T data)
+    Node<T>* Insert(Node<T>* node, T const &key)
     {
       if (!node)
       {
         size++;
-        return new Node<T>(data);
+        return new Node<T>(key);
       }
 
-      if (data < node->key)
+      if (key < node->key)
       {
-        node->left = Insert(node->left, data);
+        node->left = Insert(node->left, key);
       }
-      if (data > node->key)
+      if (key > node->key)
       {
-        node->right = Insert(node->right, data);
+        node->right = Insert(node->right, key);
       }
 
       return Balance(node);
@@ -113,7 +112,7 @@ class AVLTree
       return Balance(node);
     }
 
-    Node<T>* RemovePrivate(Node<T>* node, T key)
+    Node<T>* RemovePrivate(Node<T>* node, T const &key)
     {
       if (!node) return nullptr;
       
@@ -156,8 +155,8 @@ class AVLTree
         return Seq;
       }
 
-      void Add(T key) {root = Insert(root, key);}
+      void Add(T const &key) {root = Insert(root, key);}
 
-      void Remove(T key) {root = RemovePrivate(root, key);}
+      void Remove(T const &key) {root = RemovePrivate(root, key);}
             
 };

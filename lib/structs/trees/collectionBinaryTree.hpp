@@ -12,16 +12,17 @@ class Couple
     TElement element;
 
     Couple() {}
-    Couple(TKey key) {this->key = key;}
-    Couple(TKey key, TElement element) {this->key = key; this->element = element;}
+    Couple(TKey const &key) {this->key = key;}
+    Couple(TKey const &key, TElement const &element) {this->key = key; this->element = element;}
+    Couple(const Couple &obj) {key = obj.key; element = obj.element;}
+    ~Couple() {}
 
-    bool operator== (TKey key) {return this->key == key;}
-    bool operator== (Couple<TKey, TElement> couple) {return this->key == couple.key;}
-    bool operator> (TKey key) {return this->key > key;}
-    bool operator> (Couple<TKey, TElement> couple) {return this->key > couple.key;}
-    bool operator< (TKey key) {return this->key < key;}
-    bool operator< (Couple<TKey, TElement> couple) {return this->key < couple.key;}
+    bool operator== (const Couple<TKey, TElement> &obj) const {return this->key == obj.key;}
+    Couple& operator= (const Couple<TKey, TElement> &obj) {key = obj.key; element = obj.element; return *this;}
+    bool operator> (const Couple<TKey, TElement> &obj) const {return this->key > obj.key;}
+    bool operator< (const Couple<TKey, TElement> &obj) const {return this->key < obj.key;}
 };
+
 
 template <typename TKey, typename TElement>
 class CollectionTree : public AVLTree<Couple<TKey, TElement>>
@@ -29,22 +30,9 @@ class CollectionTree : public AVLTree<Couple<TKey, TElement>>
   using AVLTree<Couple<TKey, TElement>>::root;
   using AVLTree<Couple<TKey, TElement>>::Add;
   using AVLTree<Couple<TKey, TElement>>::Remove;
-  // using AVLTree<Couple<TKey, TElement>>::size;
-  // using AVLTree<Couple<TKey, TElement>>::GetHeight;
-  // using AVLTree<Couple<TKey, TElement>>::GetBFactor;
-  // using AVLTree<Couple<TKey, TElement>>::FixHeight;
-  // using AVLTree<Couple<TKey, TElement>>::RotateRight;
-  // using AVLTree<Couple<TKey, TElement>>::RotateLeft;
-  // using AVLTree<Couple<TKey, TElement>>::Balance;
-  // using AVLTree<Couple<TKey, TElement>>::Insert;
-  // using AVLTree<Couple<TKey, TElement>>::FindMin;
-  // using AVLTree<Couple<TKey, TElement>>::RemoveMin;
-  // using AVLTree<Couple<TKey, TElement>>::Seq_LKP;
-  // using AVLTree<Couple<TKey, TElement>>::GetCount;
-  // using AVLTree<Couple<TKey, TElement>>::GetSequence;
-
+  
   private:
-    TElement REC_Get(Node<Couple<TKey, TElement>>* node, TKey key) const
+    TElement& REC_Get(Node<Couple<TKey, TElement>>* node, TKey const &key) const
     {
       if (node->key == key) return node->key.element;
       if (node->key > key) return REC_Get(node->left, key);
@@ -52,9 +40,20 @@ class CollectionTree : public AVLTree<Couple<TKey, TElement>>
     }
 
   public:
-    TElement Get(TKey key) const {return REC_Get(root, key);}
+    TElement& Get(TKey const &key) const 
+    {
+      return REC_Get(root, key);
+    }
 
-    void Add(TKey key, TElement element) {Add(Couple<TKey, TElement>(key, element));}
+    void Add(TKey const &key, TElement const &element) 
+    {
+      Couple<TKey, TElement> cpl(key, element);
+      Add(cpl);
+    }
 
-    void Remove(TKey key) {Remove(Couple<TKey, TElement>(key));}
+    void Remove(TKey const &key) 
+    {
+      Couple<TKey, TElement> cpl(key);
+      Remove(cpl);
+    }
 };

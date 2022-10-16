@@ -55,7 +55,7 @@ class DynamicArray
 
     // операции
 
-    void Set(int index, T value)
+    void Set(int index, T const &value)
     {
       CheckValidIndex(index);
       data[index] = value;

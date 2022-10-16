@@ -1,5 +1,4 @@
 #pragma once
-
 #include "sequence.hpp"
 #include "dynamicArray.hpp"
 
@@ -41,7 +40,7 @@ class ArraySequence : public Sequence<T>
     int GetLength() const override {return array->GetSize();}
 
     //@ INFO
-    bool Contains(T item) const override
+    bool Contains(T const &item) const override
     {
       for (int i = 0; i < array->GetSize(); i++)
       {
@@ -51,27 +50,27 @@ class ArraySequence : public Sequence<T>
     }
     
     //Операции
-    void Append(T item) override
+    void Append(T const &item) override
     {
       array->Resize(array->GetSize() + 1);
       array->Set(array->GetSize() - 1, item);
     }
 
-    void Prepend(T item) override
+    void Prepend(T const &item) override
     {
       array->Resize(array->GetSize() + 1);
       for (int i = array->GetSize() - 1; i > 0 ; array->Set(i, array->Get(i - 1)), i--);
       array->Set(0, item);
     }
 
-    void InsertAt(int index, T item) override
+    void InsertAt(int index, T const &item) override
     {
       array->Resize(array->GetSize() + 1);
       for (int i = array->GetSize() - 1; i > index; array->Set(i, array->Get(i - 1)), i--);
       array->Set(index, item);
     }
 
-    void Set(int index, T item) override {array->Set(index, item);}
+    void Set(int index, T const &item) override {array->Set(index, item);}
 
     void Swap(int index1, int index2) override
     {
