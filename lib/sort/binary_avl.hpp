@@ -1,10 +1,9 @@
 #pragma once
-
+#include <iostream>
 #include <string>
-
-#include "../sorts.hpp"
-#include "../sequence.hpp"
+#include "../structs/sequence/sequence.hpp"
 #include "../structs/trees/binaryTree.hpp"
+#include "../structs/sort/isort.hpp"
 
 using namespace std;
 
@@ -19,12 +18,10 @@ class BinaryAVLSort : public ISort<T>
 
     Sequence<T>* Sort(Sequence<T>* _Seq, bool (*cmp)(T vol1, T vol2)) const override
     {
-      BinaryTree<T>* avl_tree = new BinaryTree<T>();
-      for (int i = 0; i < _Seq->GetLength(); avl_tree->add_key(_Seq->Get(i)), i++);
-
-      Sequence<T>* Seq = avl_tree->GetSeq("LKP");
-
-      delete avl_tree;
-      return Seq;
+      AVLTree<T> tree;
+      for (int i = 0; i < _Seq->GetLength(); tree.Add(_Seq->Get(i)), i++);
+      
+      Sequence<T>* Res = tree.GetSequence();
+      return Res;
     }
 };

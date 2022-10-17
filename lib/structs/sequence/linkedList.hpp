@@ -87,13 +87,13 @@ class LinkedList
     }
 
     // декомпозиция
-    T GetFirst() const 
+    T& GetFirst() const 
     {
       CheckEmpty();
       return root->key;
     }
 
-    T GetLast() const
+    T& GetLast() const
     {
       CheckEmpty();
       List_Node<T>* ptr = root;
@@ -102,7 +102,7 @@ class LinkedList
       return ptr->key;
     }
 
-    T Get(int index) const
+    T& Get(int index) const
     {
       CheckEmpty();
       CheckValidIndex(index);
@@ -134,7 +134,7 @@ class LinkedList
     int GetLength() const {return size;}
 
     // операции
-    void Append(T item)
+    void Append(T const &item)
     {
       if (size == 0)
       {
@@ -149,7 +149,7 @@ class LinkedList
       size++;
     }
 
-    void Prepend(T item)
+    void Prepend(T const &item)
     {
       if (size == 0)
       {
@@ -177,7 +177,7 @@ class LinkedList
       ptr->next->next = tmp;
     }
 
-    void Set(int index, T item)
+    void Set(int index, T const &item)
     {
       CheckEmpty();
       CheckValidIndex(index);
@@ -185,5 +185,16 @@ class LinkedList
       List_Node<T>* ptr = root;
       for (int i = 0; i < index; ptr = ptr->next, i++);
       ptr->key = item;
+    }
+
+    int IndexOf(T const &item) const
+    {
+      List_Node<T>* ptr = root;
+      for (int i = 0; i < size; i++)
+      {
+        if (ptr->key == item) return i;
+        ptr = ptr->next;
+      }
+      return -1;
     }
 };

@@ -45,7 +45,7 @@ class DynamicArray
 
     // декомпозиция
 
-    T Get(int index) const
+    T& Get(int index) const
     {
       CheckValidIndex(index);
       return data[index];

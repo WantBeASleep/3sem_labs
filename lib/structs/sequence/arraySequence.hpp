@@ -22,11 +22,11 @@ class ArraySequence : public Sequence<T>
     ~ArraySequence() {delete array;}
 
     // получение
-    T GetFirst() const override {return array->Get(0);}
+    T& GetFirst() const override {return array->Get(0);}
 
-    T GetLast() const override {return array->Get(array->GetSize() - 1);}
+    T& GetLast() const override {return array->Get(array->GetSize() - 1);}
 
-    T Get(int index) const override {return array->Get(index);}
+    T& Get(int index) const override {return array->Get(index);}
 
     Sequence<T>* Copy() const override {return (Sequence<T>*)(new ArraySequence<T>(*this));}
 
@@ -38,6 +38,15 @@ class ArraySequence : public Sequence<T>
     }
 
     int GetLength() const override {return array->GetSize();}
+
+    int IndexOf(T const &item) const override
+    {
+      for (int i = 0; i < array->GetSize(); i++)
+      {
+        if (array->Get(i) == item) return i;
+      }
+      return -1;
+    }
 
     //@ INFO
     bool Contains(T const &item) const override

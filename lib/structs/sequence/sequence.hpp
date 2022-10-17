@@ -9,12 +9,13 @@ class Sequence
     virtual ~Sequence() {}
 
     // получение
-    virtual T GetFirst() const = 0;
-    virtual T GetLast() const = 0;
-    virtual T Get(int index) const = 0;
+    virtual T& GetFirst() const = 0;
+    virtual T& GetLast() const = 0;
+    virtual T& Get(int index) const = 0;
     virtual Sequence<T>* Copy() const = 0;
     virtual Sequence<T>* GetSubsequence(int startIndex, int endIndex) const = 0;
     virtual int GetLength() const = 0;
+    virtual int IndexOf(T const &item) const = 0;
 
     //@ INFO
     virtual bool Contains(T const &item) const = 0;

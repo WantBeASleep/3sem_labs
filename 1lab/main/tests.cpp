@@ -36,11 +36,11 @@ void Test()
   Sorts->Append(new InsertionSort<int>());
   Sorts->Append(new SelectionSort<int>());
   Sorts->Append(new ShakerSort<int>());
+  Sorts->Append(new BinaryAVLSort<int>());
   // Sorts->Append(new BinaryInsertSort<int>()); // 19 bytes heap? delete???? delete Isort = Bin..
-  // Sorts->Append(new BinaryAVLSort<int>()); // 16 bytes with todo...
 
   // МАССИВ КОТОРЫЙ БУДЕМ СОРТИРОВАТЬ
-  for (int i = 0; i < 20; Seq->Append(rand() % 20), i++);
+  for (int i = 0; i < 20; Seq->Append(rand() % 1000), i++);
 
   // ВЫВОДИМ ОРИГИНАЛ
   cout << "Original: ";

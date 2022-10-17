@@ -23,11 +23,11 @@ class LinkedListSequence : public Sequence<T>
     ~LinkedListSequence() {delete list;}
 
     // получение
-    T GetFirst() const override {return list->GetFirst();}
+    T& GetFirst() const override {return list->GetFirst();}
 
-    T GetLast() const override {return list->GetLast();}
+    T& GetLast() const override {return list->GetLast();}
 
-    T Get(int index) const override {return list->Get(index);}
+    T& Get(int index) const override {return list->Get(index);}
 
     Sequence<T>* Copy() const override {return (Sequence<T>*)(new LinkedListSequence<T>(*this));}
 
@@ -38,17 +38,19 @@ class LinkedListSequence : public Sequence<T>
 
     int GetLength() const override {return list->GetLength();}
 
+    int IndexOf(T const &item) const override {return list->IndexOf(item);}
+
     //@ INFO
-    bool Contains(T item) const override {return false;}
+    bool Contains(T const &item) const override {return false;}
 
     // Операции
-    void Append(T item) override {list->Append(item);}
+    void Append(T const &item) override {list->Append(item);}
 
-    void Prepend(T item) override {list->Prepend(item);}
+    void Prepend(T const &item) override {list->Prepend(item);}
 
-    void InsertAt(int index, T item) override {list->InsertAt(index, item);}
+    void InsertAt(int index, T const &item) override {list->InsertAt(index, item);}
 
-    void Set(int index, T item) override {list->Set(index, item);}
+    void Set(int index, T const &item) override {list->Set(index, item);}
 
     void Swap(int index1, int index2) override
     {
