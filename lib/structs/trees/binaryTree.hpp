@@ -92,11 +92,11 @@ class AVLTree
         return new Node<T>(key);
       }
 
-      if (key < node->key)
+      if (cmp(key, node->key))
       {
         node->left = Insert(node->left, key);
       }
-      if (key > node->key)
+      if (!cmp(key, node->key))
       {
         node->right = Insert(node->right, key);
       }
@@ -117,8 +117,8 @@ class AVLTree
     {
       if (!node) return nullptr;
       
-      if (node->key > key) node->left = RemovePrivate(node->left, key);
-      else if (node->key < key) node->right = RemovePrivate(node->right, key);
+      if (cmp(key, node->key)) node->left = RemovePrivate(node->left, key);
+      else if (cmp(node->key, key)) node->right = RemovePrivate(node->right, key); // ????
       else
       {
         Node<T>* LeftSubTr = node->left;
