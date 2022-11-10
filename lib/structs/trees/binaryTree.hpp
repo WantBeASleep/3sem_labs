@@ -29,7 +29,7 @@ class AVLTree
   protected:
     Node<T>* root;
     int size;
-    
+    bool (*cmp)(const T&, const T&);
         
     int GetHeight(Node<T>* ptr) const {return ptr?ptr->height:0;}
 
@@ -144,7 +144,7 @@ class AVLTree
     }
 
     public:
-      AVLTree(bool (*cmp)(const T&, const T&)) {root = nullptr; size = 0;}
+      AVLTree(bool (*cmp)(const T&, const T&)) {root = nullptr; size = 0; this->cmp = cmp;}
       ~AVLTree() {while (root) root = RemovePrivate(root, root->key);}
       
       int GetCount() const {return size;}
