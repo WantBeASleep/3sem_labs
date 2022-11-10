@@ -1,19 +1,19 @@
 #pragma once
 
-#include "../containers/Couple.hpp"
+#include "../containers/PairKeyVal.hpp"
 #include "binaryTree.hpp"
 
 using namespace std;
 
 template <typename TKey, typename TElement>
-class CollectionTree : public AVLTree<Couple<TKey, TElement>>
+class CollectionTree : public AVLTree<PairKeyVal<TKey, TElement>>
 {
-  using AVLTree<Couple<TKey, TElement>>::root;
-  using AVLTree<Couple<TKey, TElement>>::Add;
-  using AVLTree<Couple<TKey, TElement>>::Remove;
+  using AVLTree<PairKeyVal<TKey, TElement>>::root;
+  using AVLTree<PairKeyVal<TKey, TElement>>::Add;
+  using AVLTree<PairKeyVal<TKey, TElement>>::Remove;
   
   private:
-    TElement& REC_Get(Node<Couple<TKey, TElement>>* node, TKey const &key) const
+    TElement& REC_Get(Node<PairKeyVal<TKey, TElement>>* node, TKey const &key) const
     {
       if (node->key == key) return node->key.element;
       if (node->key > key) return REC_Get(node->left, key);
@@ -21,7 +21,7 @@ class CollectionTree : public AVLTree<Couple<TKey, TElement>>
     }
 
   public:
-    CollectionTree(bool (*cmp)(const Couple<TKey, TElement>&, const Couple<TKey, TElement>&)) : AVLTree<Couple<TKey, TElement>>(cmp) {}
+    CollectionTree(bool (*cmp)(const PairKeyVal<TKey, TElement>&, const PairKeyVal<TKey, TElement>&)) : AVLTree<PairKeyVal<TKey, TElement>>(cmp) {}
 
     TElement& Get(TKey const &key) const 
     {
@@ -30,13 +30,13 @@ class CollectionTree : public AVLTree<Couple<TKey, TElement>>
 
     void Add(TKey const &key, TElement const &element) 
     {
-      Couple<TKey, TElement> cpl(key, element);
+      PairKeyVal<TKey, TElement> cpl(key, element);
       Add(cpl);
     }
 
     void Remove(TKey const &key) 
     {
-      Couple<TKey, TElement> cpl(key);
+      PairKeyVal<TKey, TElement> cpl(key);
       Remove(cpl);
     }
 };

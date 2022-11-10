@@ -15,7 +15,7 @@ class AVLMap : public IMap<TKey, TElement>
   public:
     
     //@ ПОЛУЧЕНИЕ 
-    AVLMap(bool (*cmp)(const Couple<TKey, TElement>&, const Couple<TKey, TElement>&)) : data(cmp) {}
+    AVLMap(bool (*cmp)(const PairKeyVal<TKey, TElement>&, const PairKeyVal<TKey, TElement>&)) : data(cmp) {}
     int GetCount() const override {return data.GetCount();}
 
     int GetCapacity() const override {return -1;}
@@ -24,7 +24,7 @@ class AVLMap : public IMap<TKey, TElement>
 
     Sequence<TKey>* GetKeys() const override
     {
-      Sequence<Couple<TKey, TElement>>* Couples = data.GetSequence();
+      Sequence<PairKeyVal<TKey, TElement>>* Couples = data.GetSequence();
     
       Sequence<TKey>* Keys = new ArraySequence<TKey>();
       for (int i = 0; i < Couples->GetLength(); Keys->Append(Couples->Get(i).key), i++);
@@ -35,7 +35,7 @@ class AVLMap : public IMap<TKey, TElement>
 
     Sequence<TElement>* GetValues() const override
     {
-      Sequence<Couple<TKey, TElement>>* Couples = data.GetSequence();
+      Sequence<PairKeyVal<TKey, TElement>>* Couples = data.GetSequence();
 
       Sequence<TElement>* Values = new ArraySequence<TElement>();
       for (int i = 0; i < Couples->GetLength(); Values->Append(Couples->Get(i).element), i++);
