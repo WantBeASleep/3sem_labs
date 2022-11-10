@@ -15,7 +15,7 @@ class AVLMap : public IMap<TKey, TElement>
   public:
     
     //@ ПОЛУЧЕНИЕ 
-    AVLMap(bool (*cmp)(const Couple<TKey, TElement>& val1, const Couple<TKey, TElement>& val2)) : data((bool (*)(const Couple<TKey, TElement>&, const Couple<TKey, TElement>&)) cmp) {}
+    AVLMap(bool (*cmp)(const Couple<TKey, TElement>&, const Couple<TKey, TElement>&)) : data(cmp) {}
     int GetCount() const override {return data.GetCount();}
 
     int GetCapacity() const override {return -1;}

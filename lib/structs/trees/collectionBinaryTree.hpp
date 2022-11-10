@@ -21,7 +21,7 @@ class CollectionTree : public AVLTree<Couple<TKey, TElement>>
     }
 
   public:
-    CollectionTree(bool (*cmp)(const Couple<TKey, TElement>& val1, const Couple<TKey, TElement>& val2)) : AVLTree<Couple<TKey, TElement>>((bool (*)(const Couple<TKey, TElement>&, const Couple<TKey, TElement>&)) cmp) {}
+    CollectionTree(bool (*cmp)(const Couple<TKey, TElement>&, const Couple<TKey, TElement>&)) : AVLTree<Couple<TKey, TElement>>(cmp) {}
 
     TElement& Get(TKey const &key) const 
     {
