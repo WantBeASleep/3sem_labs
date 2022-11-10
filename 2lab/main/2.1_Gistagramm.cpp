@@ -102,6 +102,12 @@ class Statistic
 
 };
 
+bool comparator(const Couple<Range, Statistic>& val1, const Couple<Range, Statistic>& val2)
+{
+  if (val1 < val2) return true;
+  else return false;
+}
+
 class Gistagramm
 {
   private:
@@ -116,7 +122,8 @@ class Gistagramm
   public:
     Gistagramm(Sequence<Person>* Seq, Split const &Splt)
     {
-      map = new AVLMap<Range, Statistic>();
+      bool (*cmp)(const Couple<Range, Statistic>&, const Couple<Range, Statistic>&) = comparator;
+      map = new AVLMap<Range, Statistic>(cmp);
       
       for (int i = 0; i < Splt.GetCount(); i++)
       {

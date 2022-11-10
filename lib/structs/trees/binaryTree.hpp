@@ -143,7 +143,7 @@ class AVLTree
     }
 
     public:
-      AVLTree() {root = nullptr; size = 0;}
+      AVLTree(bool (*cmp)(const T& val1, const T& val2)) {root = nullptr; size = 0;}
       ~AVLTree() {while (root) root = RemovePrivate(root, root->key);}
       
       int GetCount() const {return size;}
