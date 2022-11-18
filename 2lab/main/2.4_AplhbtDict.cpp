@@ -83,6 +83,14 @@ class Book
       delete Res;
     }
 
+    ~Book()
+    {
+      for (int i = 0; i < data.GetLength(); i++)
+      {
+        delete data.Get(i).element;
+      }
+    }
+
     friend ostream& operator<< (ostream &os, Book const &book);
 
 };
@@ -93,7 +101,7 @@ ostream& operator<< (ostream &os, Book const &book)
   {
     os << book.data.Get(i).key << ":";
     PrintSeqAsList<ostream, int>(os, book.data.Get(i).element);
-    os <<  " papuga" << endl;
+    cout << endl;
   }
   return os;
 }
