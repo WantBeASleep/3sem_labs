@@ -73,9 +73,7 @@ class SortedSequence
     SortedSequence& operator= (Sequence<T>* Seq)
     {
       delete data;
-      cout << "papuga 1" << endl;
       data = sort->Sort(Seq, cmp);
-      cout << "papuga 2" << endl;
       return *this;
     }
 

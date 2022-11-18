@@ -1,9 +1,10 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "../../lib/sequence.hpp"
-#include "../../lib/containers.hpp"
-#include "../../lib/funcs.hpp"
+#include "../../libv2/libSequence.hpp"
+#include "../../libv2/libSortSequence.hpp"
+#include "../../libv2/libPair.hpp"
+#include "../../libv2/libFuncs.hpp"
 
 static bool comparator(const PairKeyVal<string, Sequence<int>*>& val1, const PairKeyVal<string, Sequence<int>*>& val2)
 {
@@ -49,14 +50,14 @@ class Book
             curPage++;
           }
 
-          PairKeyVal<string, Sequence<int>*> cpl(word);
-          if (!Res->Contains(cpl))
+          PairKeyVal<string, Sequence<int>*> pair(word);
+          if (!Res->Contains(pair))
           {
-            cpl.element = new ArraySequence<int>();
-            cpl.element->Append(curPage);
-            Res->Append(cpl);
+            pair.element = new ArraySequence<int>();
+            pair.element->Append(curPage);
+            Res->Append(pair);
           } else {
-            Res->Get(Res->IndexOf(cpl)).element->Append(curPage);
+            Res->Get(Res->IndexOf(pair)).element->Append(curPage);
           }
 
           strIdx = ptr + 1;
@@ -111,5 +112,5 @@ void Aplhabet_dictionary()
   bool (*cmp)(const PairKeyVal<string, Sequence<int>*>&, const PairKeyVal<string, Sequence<int>*>&) = comparator;
   Book book(text, 100, cmp);
 
-  // cout << book << endl;
+  cout << book << endl;
 }

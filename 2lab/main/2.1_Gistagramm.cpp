@@ -203,5 +203,4 @@ void Gistagramm_task()
   delete Names;
   delete Seq;
   delete Bord_Seq;
-
 }
