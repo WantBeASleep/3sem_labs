@@ -1,10 +1,11 @@
 #pragma once
+using namespace std;
+#include <iostream>
+
 #include <algorithm>
 #include "../sequence/sequence.hpp"
 #include "../sequence/arraySequence.hpp"
-#include <iostream>
 
-using namespace std;
 
 template <typename T>
 class Node
@@ -14,7 +15,7 @@ class Node
     int height;
     Node<T> *left, *right;
 
-    Node(T const &key) 
+    Node(const T& key) 
     {
       this->key = key;
       height = 1;
@@ -27,14 +28,20 @@ class Node
 template <typename T>
 class AVLTree
 {
-  protected:
+  private:
     Node<T>* root;
     int size;
     bool (*cmp)(const T&, const T&);
         
-    int GetHeight(Node<T>* ptr) const {return ptr?ptr->height:0;}
+    int GetHeight(Node<T>* ptr) const 
+    {
+      return ptr?ptr->height:0;
+    }
 
-    int GetBFactor(Node<T>* ptr) const {return ptr->right - ptr->left;}
+    int GetBFactor(Node<T>* ptr) const 
+    {
+      return GetHeight(ptr->right) - GetHeight(ptr->left);
+    }
 
     void FixHeight(Node<T>* ptr)
     {
@@ -85,7 +92,7 @@ class AVLTree
       return node;
     }
 
-    Node<T>* Insert(Node<T>* node, T const &key)
+    Node<T>* Insert(Node<T>* node, const T& key)
     {
       if (!node)
       {
@@ -97,7 +104,7 @@ class AVLTree
       {
         node->left = Insert(node->left, key);
       }
-      if (!cmp(key, node->key))
+      if (cmp(node->key, key))
       {
         node->right = Insert(node->right, key);
       }
@@ -105,7 +112,10 @@ class AVLTree
       return Balance(node);
     }
 
-    Node<T>* FindMin(Node<T>* node) const {return node->left?FindMin(node->left):node;}
+    Node<T>* FindMin(Node<T>* node) const 
+    {
+      return node->left?FindMin(node->left):node;
+    }
 
     Node<T>* RemoveMin(Node<T>* node)
     {
@@ -114,12 +124,12 @@ class AVLTree
       return Balance(node);
     }
 
-    Node<T>* RemovePrivate(Node<T>* node, T const &key)
+    Node<T>* RemovePr(Node<T>* node, T const &key)
     {
       if (!node) return nullptr;
       
-      if (cmp(key, node->key)) node->left = RemovePrivate(node->left, key);
-      else if (cmp(node->key, key)) node->right = RemovePrivate(node->right, key); // ????
+      if (cmp(key, node->key)) node->left = RemovePr(node->left, key);
+      else if (cmp(node->key, key)) node->right = RemovePr(node->right, key); // ????
       else
       {
         Node<T>* LeftSubTr = node->left;
@@ -136,36 +146,57 @@ class AVLTree
       return Balance(node);
     }
 
-    void Seq_LKP(Sequence<T>* Seq, Node<T>* node) const
+    void GetSeq(Sequence<T>* Seq, Node<T>* node) const
     {
       if (!node) return;
-      Seq_LKP(Seq, node->left);
+      GetSeq(Seq, node->left);
       Seq->Append(node->key);
-      Seq_LKP(Seq, node->right);
+      GetSeq(Seq, node->right);
     }
 
-    public:
-      AVLTree(bool (*cmp)(const T&, const T&)) {root = nullptr; size = 0; this->cmp = cmp;}
+    T& GetPr(Node<T>* node, const T& key) const
+    {
+      if (node->key == key) return node->key;
+      if (node->key > key) return GetPr(node->left, key);
+      else return GetPr(node->right, key);
+    }
 
-      ~AVLTree()
+  public:
+    AVLTree(bool (*cmp)(const T&, const T&)) {root = nullptr; size = 0; this->cmp = cmp;}
+
+    ~AVLTree()
+    {
+      while (root)
       {
-        while (root)
-        {
-          root = RemovePrivate(root, root->key);
-        }
+        root = RemovePr(root, root->key);
       }
-      
-      int GetCount() const {return size;}
-      
-      Sequence<T>* GetSequence() const
-      {
-        Sequence<T>* Seq = new ArraySequence<T>();
-        Seq_LKP(Seq, root);
-        return Seq;
-      }
+    }
+    
+    int GetCount() const 
+    {
+      return size;
+    }
+    
+    Sequence<T>* GetSequence() const
+    {
+      Sequence<T>* Seq = new ArraySequence<T>();
+      GetSeq(Seq, root);
+      return Seq;
+    }
 
-      void Add(T const &key) {root = Insert(root, key);}
+    T& Get(const T& key) const
+    {
+      return GetPr(root, key);
+    }
 
-      void Remove(T const &key) {root = RemovePrivate(root, key);}
+    void Add(const T& key) 
+    {
+      root = Insert(root, key);
+    }
+
+    void Remove(const T& key) 
+    {
+      root = RemovePr(root, key);
+    }
             
 };

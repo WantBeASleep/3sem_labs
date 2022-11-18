@@ -1,7 +1,7 @@
 #include <string>
 
-#include "../lib/sequence.hpp"
-#include "../lib/funcs.hpp"
+#include "../libv2/libSequence.hpp"
+#include "../libv2/libFuncs.hpp"
 #include "main/tasks.hpp"
 
 using namespace std;

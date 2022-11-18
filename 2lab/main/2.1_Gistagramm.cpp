@@ -1,11 +1,12 @@
 #include <string>
 #include <time.h>
 #include <fstream>
+#include <iostream>
 
-#include "../../lib/sequence.hpp"
-#include "../../lib/containers.hpp"
-#include "../../lib/funcs.hpp"
-#include "../../lib/libs.hpp"
+#include "../../libv2/libSequence.hpp"
+#include "../../libv2/libMap.hpp"
+#include "../../libv2/libFuncs.hpp"
+#include "../../libv2/libSrc.hpp"
 
 using namespace std;
 
@@ -19,9 +20,17 @@ class Person
     Person(string name, int age) {this->name = name; this->age = age;}
     ~Person() {}
 
-    bool operator== (const Person &person) const {return (name == person.name) && (age == person.age);}
-    bool operator> (const Person &person) const {return age > person.age;}
-    bool operator< (const Person &person) const {return age < person.age;}
+    bool operator== (const Person& person) const 
+    {
+      return (name == person.name) && (age == person.age);
+    }
+
+    Person& operator= (const Person& person)
+    {
+      name = person.name;
+      age = person.age;
+      return *this;
+    }
 };
 
 class Range
@@ -69,7 +78,7 @@ class Split
 
     int GetCount() const {return data->GetLength();}
 
-    Range Get(int index) const {return data->Get(index);}
+    const Range& Get(int index) const {return data->Get(index);}
 };
 
 class Statistic
@@ -85,7 +94,7 @@ class Statistic
 
     int GetCount() const {return data->GetLength();}
 
-    Person Get(int index) const {return data->Get(index);}
+    const Person& Get(int index) const {return data->Get(index);}
 
     int GetAvgAge() const
     {
@@ -95,17 +104,22 @@ class Statistic
       return avg_age;
     }
 
-    void Add(Person const &obj) {data->Append(obj);}
+    void Add(const Person& obj) {data->Append(obj);}
 
     bool operator== (const Statistic &obj) {return data == obj.data;}
-    Statistic& operator= (const Statistic &obj) {delete data; data = obj.data->Copy(); return *this;}
 
+    Statistic& operator= (const Statistic &obj) 
+    {
+      delete data; 
+      data = obj.data->Copy(); 
+      return *this;
+    }
 };
 
-bool comparator(const PairKeyVal<Range, Statistic>& val1, const PairKeyVal<Range, Statistic>& val2)
+static bool comparator(const PairKeyVal<Range, Statistic>& val1, const PairKeyVal<Range, Statistic>& val2)
 {
   if (val1 < val2) return true;
-  else return false;
+  return false;
 }
 
 class Gistagramm
@@ -113,14 +127,14 @@ class Gistagramm
   private:
     IMap<Range, Statistic>* map;
 
-    bool IsInRange(Person const &person, Range const &range) const
+    bool IsInRange(const Person& person, const Range& range) const
     {
       if (person.age >= range.start && person.age <= range.end) return true;
       else return false;
     }
 
   public:
-    Gistagramm(Sequence<Person>* Seq, Split const &Splt)
+    Gistagramm(Sequence<Person>* Seq, const Split& Splt)
     {
       bool (*cmp)(const PairKeyVal<Range, Statistic>&, const PairKeyVal<Range, Statistic>&) = comparator;
       map = new AVLMap<Range, Statistic>(cmp);
@@ -189,4 +203,5 @@ void Gistagramm_task()
   delete Names;
   delete Seq;
   delete Bord_Seq;
+
 }

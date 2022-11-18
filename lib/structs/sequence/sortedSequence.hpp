@@ -9,23 +9,24 @@ class SortedSequence
 {
   private:
     Sequence<Type>* data;
-    BinaryAVLSort<Type> sort;
-    bool (*cmp)(Type val1, Type val2);
+    ISort<Type>* sort;
+    bool (*cmp)(const Type&, const Type&);
 
   public:
-    SortedSequence() {data = new ArraySequence<Type>();}
+    SortedSequence(bool (*cmp)(const Type&, const Type&)) {data = new ArraySequence<Type>(); sort = new BinaryAVLSort<Type>(); this->cmp = cmp;}
 
-    SortedSequence(Sequence<Type>* Seq) {data = sort.Sort(Seq, cmp);}
+    SortedSequence(Sequence<Type>* Seq, bool (*cmp)(const Type&, const Type&)) {this->cmp = cmp; data = sort.Sort(Seq, cmp);}
 
-    SortedSequence(Type *items, int count)
+    SortedSequence(Type *items, int count, bool (*cmp)(const Type&, const Type&))
     {
+      this->cmp = cmp;
       data = new ArraySequence<Type>(items, count);
       Sequence<Type> *tmp = data;
       data = sort.Sort(data, cmp);
       delete tmp;
     }
     
-    ~SortedSequence() {delete data;}
+    ~SortedSequence() {delete data; delete sort;}
 
     int GetLength() const {return data->GetLength();}
     
@@ -51,14 +52,16 @@ class SortedSequence
     {
       data->Append(item);
       Sequence<Type>* tmp = data;
-      data = sort.Sort(data, cmp);
+      data = sort->Sort(data, cmp);
       delete tmp;
     }
 
     SortedSequence& operator= (Sequence<Type>* Seq)
     {
       delete data;
-      data = sort.Sort(Seq, cmp);
+      cout << "papuga 1" << endl;
+      data = sort->Sort(Seq, cmp);
+      cout << "papuga 2" << endl;
       return *this;
     }
 

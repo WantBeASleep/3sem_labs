@@ -1,107 +1,115 @@
-// #include <string>
-// #include <iostream>
-// #include <fstream>
-// #include "../../lib/sequence.hpp"
-// #include "../../lib/containers.hpp"
-// #include "../../lib/funcs.hpp"
+#include <string>
+#include <iostream>
+#include <fstream>
+#include "../../lib/sequence.hpp"
+#include "../../lib/containers.hpp"
+#include "../../lib/funcs.hpp"
 
-// class Book
-// {
-//   private:
-//     SortedSequence<Couple<string, Sequence<int>*>> data;
-//     string text;
-//     int pagesize;
+static bool comparator(const PairKeyVal<string, Sequence<int>*>& val1, const PairKeyVal<string, Sequence<int>*>& val2)
+{
+  if (val1 < val2) return true;
+  else return false;
+}
 
-//     int PageSize(int number) const
-//     {
-//       if (number == 1) return pagesize/2;
-//       if (!(number % 10)) return pagesize/4 * 3;
-//       return pagesize;
-//     }
+class Book
+{
+  private:
+    SortedSequence<PairKeyVal<string, Sequence<int>*>> data;
+    string text;
+    int pagesize;
 
-//   public:
-//     Book(string text, int size)
-//     {
-//       this->text = text;
-//       pagesize = size;
+    int PageSize(int number) const
+    {
+      if (number == 1) return pagesize/2;
+      if (!(number % 10)) return pagesize/4 * 3;
+      return pagesize;
+    }
 
-//       Sequence<Couple<string, Sequence<int>*>>* Res = new ArraySequence<Couple<string, Sequence<int>*>>();
+  public:
+    Book(string text, int size, bool (*cmp)(const PairKeyVal<string, Sequence<int>*>&, const PairKeyVal<string, Sequence<int>*>&)) : data(cmp)
+    {
+      this->text = text;
+      pagesize = size;
 
-//       int curPage = 1, symbCounter = -1;// pagesize
-//       int strIdx = 0, endIdx = 0, ptr = 0; // word vars
-//       while(text[ptr])
-//       {
-//         if (text[ptr] == ' ')
-//         {
-//           endIdx = ptr - 1;
-//           string word = text.substr(strIdx, endIdx - strIdx + 1);
+      Sequence<PairKeyVal<string, Sequence<int>*>>* Res = new ArraySequence<PairKeyVal<string, Sequence<int>*>>();
 
-//           symbCounter += word.length() + 1;
-//           if (symbCounter >= PageSize(curPage))
-//           {
-//             symbCounter = -1;
-//             curPage++;
-//           }
+      int curPage = 1, symbCounter = -1;// pagesize
+      int strIdx = 0, endIdx = 0, ptr = 0; // word vars
+      while(text[ptr])
+      {
+        if (text[ptr] == ' ')
+        {
+          endIdx = ptr - 1;
+          string word = text.substr(strIdx, endIdx - strIdx + 1);
 
-//           Couple<string, Sequence<int>*> cpl(word);
-//           if (!Res->Contains(cpl))
-//           {
-//             cpl.element = new ArraySequence<int>();
-//             cpl.element->Append(curPage);
-//             Res->Append(cpl);
-//           } else {
-//             Res->Get(Res->IndexOf(cpl)).element->Append(curPage);
-//           }
+          symbCounter += word.length() + 1;
+          if (symbCounter >= PageSize(curPage))
+          {
+            symbCounter = -1;
+            curPage++;
+          }
 
-//           strIdx = ptr + 1;
-//         }
+          PairKeyVal<string, Sequence<int>*> cpl(word);
+          if (!Res->Contains(cpl))
+          {
+            cpl.element = new ArraySequence<int>();
+            cpl.element->Append(curPage);
+            Res->Append(cpl);
+          } else {
+            Res->Get(Res->IndexOf(cpl)).element->Append(curPage);
+          }
 
-//         if (text[ptr] == '\n') // СЧИТАЮ ЧТО У МЕНЯ ВСЕГДА 20 СТРОК, СИМВОЛОВ В СТРОКЕ = PAGESIZE / 20;
-//         {
-//           int line = (symbCounter / (pagesize/20)) + 1;
-//           symbCounter = line * (pagesize/20);
-//           if (symbCounter >= PageSize(curPage))
-//           {
-//             symbCounter = -1;
-//             curPage++;
-//           }
+          strIdx = ptr + 1;
+        }
 
-//           strIdx = ptr + 1;
-//         }
+        if (text[ptr] == '\n') // СЧИТАЮ ЧТО У МЕНЯ ВСЕГДА 20 СТРОК, СИМВОЛОВ В СТРОКЕ = PAGESIZE / 20;
+        {
+          int line = (symbCounter / (pagesize/20)) + 1;
+          symbCounter = line * (pagesize/20);
+          if (symbCounter >= PageSize(curPage))
+          {
+            symbCounter = -1;
+            curPage++;
+          }
 
-//         ptr++;
-//       }
+          strIdx = ptr + 1;
+        }
 
-//       data = Res;
-//       delete Res;
-//     }
+        ptr++;
+      }
 
-//     friend ostream& operator<< (ostream &os, Book const &book);
+      data = Res;
+      delete Res;
+    }
 
-// };
+    friend ostream& operator<< (ostream &os, Book const &book);
 
-// ostream& operator<< (ostream &os, Book const &book)
-// {
-//   for (int i = 0; i < book.data.GetLength(); i++)
-//   {
-//     os << book.data.Get(i).key << ":";
-//     PrintSeqAsList<ostream, int>(os, book.data.Get(i).element);
-//     os << endl;
-//   }
-//   return os;
-// }
+};
+
+ostream& operator<< (ostream &os, Book const &book)
+{
+  for (int i = 0; i < book.data.GetLength(); i++)
+  {
+    os << book.data.Get(i).key << ":";
+    PrintSeqAsList<ostream, int>(os, book.data.Get(i).element);
+    os <<  " papuga" << endl;
+  }
+  return os;
+}
 
 void Aplhabet_dictionary()
 {
-//   string text, line;
-//   ifstream in("base/text.txt");
-//   while (getline(in, line))
-//   {
-//     text.append(line + '\n');
-//   }
-//   in.close();
-//   text.erase(text.size() - 1);
+  string text, line;
+  ifstream in("base/text.txt");
+  while (getline(in, line))
+  {
+    text.append(line + '\n');
+  }
+  in.close();
+  text.erase(text.size() - 1);
 
-//   Book book(text, 100);
-//   // cout << book << endl;
+  bool (*cmp)(const PairKeyVal<string, Sequence<int>*>&, const PairKeyVal<string, Sequence<int>*>&) = comparator;
+  Book book(text, 100, cmp);
+
+  // cout << book << endl;
 }

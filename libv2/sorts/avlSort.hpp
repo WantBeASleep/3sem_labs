@@ -1,14 +1,15 @@
 #pragma once
+using namespace std;
+
 #include <iostream>
 #include <string>
 #include "../structs/sequence/sequence.hpp"
 #include "../structs/trees/binaryTree.hpp"
-#include "../structs/sort/isort.hpp"
+#include "isort.hpp"
 
-using namespace std;
 
 template <class T>
-class BinaryAVLSort : public ISort<T>
+class AVLSort : public ISort<T>
 {
   private:
     string name = "Binary AVL Sort";
@@ -22,8 +23,6 @@ class BinaryAVLSort : public ISort<T>
       for (int i = 0; i < _Seq->GetLength(); tree.Add(_Seq->Get(i)), i++);
       
       Sequence<T>* Res = tree.GetSequence();
-      cout << "SortCrash" << endl;
       return Res;
-      // Здесь краш, возможно при деструкторее tree
     }
 };
