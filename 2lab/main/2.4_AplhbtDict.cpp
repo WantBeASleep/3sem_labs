@@ -91,11 +91,11 @@ class Book
       }
     }
 
-    friend ostream& operator<< (ostream &os, Book const &book);
+    friend ostream& operator<< (ostream &os, const Book& book);
 
 };
 
-ostream& operator<< (ostream &os, Book const &book)
+ostream& operator<< (ostream &os, const Book& book)
 {
   for (int i = 0; i < book.data.GetLength(); i++)
   {
