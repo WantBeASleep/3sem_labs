@@ -1,160 +1,115 @@
-using namespace std;
 #include <iostream>
-#include <time.h>
-
-#include "../../libv2/structs/trees/2.5lab2tree.hpp"
-#include "../../libv2/libSequence.hpp"
-#include "../../libv2/libSortSequence.hpp"
+using namespace std;
 
 #define BACKPACK_VOL 5
 
-class subject
+#include "../../libv2/libSequence.hpp"
+#include "../../libv2/structs/trees/solutionTree.hpp"
+
+class backpack_item
 {
   public:
-    subject() {cost = 0; volume = 0;}
-    subject(int cost, int volume) {this->cost = cost; this->volume = volume;}
     int cost;
     int volume;
 
-    bool operator== (const subject& obj) {return (cost == obj.cost) && (volume == obj.volume);}
-    subject& operator= (const subject& obj)
+    backpack_item() {cost = 0; volume = 0;}
+    backpack_item(int cost, int volume) {this->cost = cost; this->volume = volume;}
+
+    bool operator== (const backpack_item& item)
     {
-      cost = obj.cost;
-      volume = obj.volume;
-      return *this;
+      if (cost == item.cost && volume == item.volume) return true;
+      else return false;
     }
 };
 
-static bool comparator(const subject& obj1, const subject& obj2)
-{
-  if (obj1.cost < obj2.cost) return true;
-  else if (obj1.cost == obj2.cost)
-  {
-    if (obj1.volume > obj2.volume) return true;
-    else return false;
-  } else return false;
-}
-
-ostream& operator<< (ostream &os, Sequence<subject>* seq)
-{
-  for (int i = 0; i < seq->GetLength(); i++)
-  {
-    cout << i+1 << " : ";
-    cout << seq->Get(i).cost << " : ";
-    cout << seq->Get(i).volume << endl;
-  }
-  return os;
-}
-
-ostream& operator<< (ostream &os, subject& sub)
-{
-  os << sub.cost << " : " << sub.volume;
-  return os;
-}
-
-class solution
+class wayStats
 {
   public:
-    int wayCost;
-    simpleNode<subject>* leave;
+    int cost;
+    int volume;
 
-  solution() {wayCost = 0; leave = nullptr;}
+    wayStats() {cost = 0; volume = 0;}
+    wayStats(int cost, int volume) {this->cost = cost; this->volume = volume;}
 
-  void check(simpleNode<subject>* ptr)
-  {
-    if (ptr->wayCost > wayCost)
+    bool operator> (const wayStats& stat)
     {
-      wayCost = ptr->wayCost;
-      leave = ptr;
+      if (cost > stat.cost) return true;
+      else if (cost < stat.cost) return false;
+      else if (volume < stat.volume) return true;
+      else return false;
     }
-  }
+
+    wayStats& operator= (const wayStats& stat)
+    {
+      cost = stat.cost;
+      volume = stat.volume;
+      return *this;
+    }
+    
 };
 
+class limit
+{
+  public:
+    int volume;
 
+    limit() {volume = BACKPACK_VOL;}
 
-void doLeaves(simpleNode<subject>*, solution&);
-void getway(simpleNode<subject>*);
+    bool check(const wayStats& wayStat, const backpack_item& obj2)
+    {
+      if (wayStat.volume + obj2.volume <= volume) return true;
+      else return false;
+    }
+};
+
+ostream& operator<< (ostream& os, const backpack_item& item);
+ostream& operator<< (ostream& os, Sequence<backpack_item>* Seq);
+ostream& operator<< (ostream &os, const wayStats& stat);
+wayStats func(const wayStats& stat, const backpack_item& obj);
 
 void BackPack()
 {
-  Sequence<subject>* seq_data = new ArraySequence<subject>();
-  // for (int i = 0; i < data.GetLength(); seq_data->Append(data.Get(i)), i++);
+  wayStats (*_func)(const wayStats& stat, const backpack_item& obj) = func;
+  Sequence<backpack_item>* items = new ArraySequence<backpack_item>();
   for (int i = 0; i < 10; i++)
   {
-    subject obj(rand()%10 + 1, 1);
-    seq_data->Append(obj);
+    backpack_item item(rand() % 10 + 1, 1);
+    items->Append(item);
   }
 
-  cout << seq_data;
+  cout << items;
 
-  simpleTree<subject> tree;
-  subject rootsub;
-  simpleNode<subject> rootNode(rootsub, nullptr, 0, 0, seq_data);
-  tree.root = &rootNode;
+  limit lmt;
 
-  simpleNode<subject>* ptr = tree.root;
-
-  solution answer;
-
-  // cout << "check" << endl;
-  // cout << tree.root->options;
-  doLeaves(tree.root, answer);
-
-  // cout << "~!" << endl;
-  // simpleNode<subject>* ptrOut = tree.root;
-  // while (ptrOut->leaves->GetLength() != 0)
-  // {
-  //   cout << ptrOut->leaves->GetLength() << endl;
-  //   cout << ptrOut->key << endl;
-  //   ptrOut = ptrOut->leaves->Get(rand() % ptrOut->leaves->GetLength());
-  // }
-
-  // Sequence<subject>* res = answer.getSolution();
-
-  // cout << "RESULT:" << endl << res;
-
-  cout << "here!" << endl;
-
-  getway(answer.leave);
+  solutionTree<backpack_item, wayStats, limit> tree(items, lmt, _func);
+  
 }
 
-void doLeaves(simpleNode<subject>* ptr, solution& answer)
+ostream& operator<< (ostream& os, const backpack_item& item)
 {
-  if (ptr->options->GetLength() == 0)
-  {
-    answer.check(ptr);
-    return;
-  }
-
-  for (int i = 0; i < ptr->options->GetLength(); i++)
-  {
-    simpleNode<subject>* node = new simpleNode<subject>();
-    node->key = ptr->options->Get(i);
-    node->prev = ptr;
-    node->wayCost = ptr->wayCost + node->key.cost;
-    node->wayVolume = ptr->wayVolume + node->key.volume;
-
-    Sequence<subject>* nodeOptions = new ArraySequence<subject>();
-    for (int j = 0; j < ptr->options->GetLength(); j++)
-    {
-      if (node->wayVolume + ptr->options->Get(j).volume <= BACKPACK_VOL && j != i)
-      {
-        nodeOptions->Append(ptr->options->Get(j));
-      }
-    }
-    node->options = nodeOptions;
-
-    ptr->leaves->Append(node);
-    doLeaves(ptr->leaves->GetLast(), answer);
-  }
-  return;
+  os << item.cost << " : " << item.volume << endl;
+  return os;
 }
 
-void getway(simpleNode<subject>* ptr)
+ostream& operator<< (ostream& os, Sequence<backpack_item>* Seq)
 {
-  while (ptr->prev != nullptr)
+  for (int i = 0; i < Seq->GetLength(); i++)
   {
-    cout << ptr->key << endl;
-    ptr = ptr->prev;
+    os << "id: " << i+1 << " : cost: " << Seq->Get(i).cost << " : volume: " << Seq->Get(i).volume << endl;
   }
+  return os;
+}
+
+ostream& operator<< (ostream &os, const wayStats& stat)
+{
+  os << "Cost: " << stat.cost << " : Volume: " << stat.volume << endl;
+  return os;
+}
+
+wayStats func(const wayStats& stat, const backpack_item& obj)
+{
+  wayStats newStat;
+  newStat.cost = stat.cost + obj.cost;
+  newStat.volume = stat.volume + obj.volume;
+  return newStat;
 }
