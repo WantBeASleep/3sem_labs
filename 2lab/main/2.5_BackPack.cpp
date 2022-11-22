@@ -1,115 +1,71 @@
+//* ПРОЧТИ ОПИСАНИЕ В solutionTree.hpp !! 
+
 #include <iostream>
 using namespace std;
 
-#define BACKPACK_VOL 5
+
+//? ОГРАНИЧЕНИЯ
+#define VOL_LIMIT 5
+
 
 #include "../../libv2/libSequence.hpp"
 #include "../../libv2/structs/trees/solutionTree.hpp"
 
-class backpack_item
+class item
 {
   public:
     int cost;
     int volume;
 
-    backpack_item() {cost = 0; volume = 0;}
-    backpack_item(int cost, int volume) {this->cost = cost; this->volume = volume;}
+    item() {cost = 0; volume = 0;}
+    item(int cost, int volume) {this->cost = cost; this->volume = volume;}
 
-    bool operator== (const backpack_item& item)
+    bool operator== (const item& item)
     {
       if (cost == item.cost && volume == item.volume) return true;
       else return false;
     }
-};
 
-class wayStats
-{
-  public:
-    int cost;
-    int volume;
-
-    wayStats() {cost = 0; volume = 0;}
-    wayStats(int cost, int volume) {this->cost = cost; this->volume = volume;}
-
-    bool operator> (const wayStats& stat)
+    bool Better(const item& _item)
     {
-      if (cost > stat.cost) return true;
-      else if (cost < stat.cost) return false;
-      else if (volume < stat.volume) return true;
+      if (_item.cost > cost) return true;
+      else if (_item.cost < cost) return false;
+      else if (_item.volume < volume) return true;
       else return false;
     }
 
-    wayStats& operator= (const wayStats& stat)
+    item GetWayStat(const item& _item)
     {
-      cost = stat.cost;
-      volume = stat.volume;
-      return *this;
+      item newItem(cost + _item.cost, volume + _item.volume);
+      return newItem;
     }
-    
-};
 
-class limit
-{
-  public:
-    int volume;
-
-    limit() {volume = BACKPACK_VOL;}
-
-    bool check(const wayStats& wayStat, const backpack_item& obj2)
+    bool InLimit(const item& _item)
     {
-      if (wayStat.volume + obj2.volume <= volume) return true;
+      if (volume + _item.volume <= VOL_LIMIT) return true;
       else return false;
     }
 };
 
-ostream& operator<< (ostream& os, const backpack_item& item);
-ostream& operator<< (ostream& os, Sequence<backpack_item>* Seq);
-ostream& operator<< (ostream &os, const wayStats& stat);
-wayStats func(const wayStats& stat, const backpack_item& obj);
+ostream& operator<< (ostream& os, const item& item);
 
 void BackPack()
 {
-  wayStats (*_func)(const wayStats& stat, const backpack_item& obj) = func;
-  Sequence<backpack_item>* items = new ArraySequence<backpack_item>();
+  Sequence<item>* items = new ArraySequence<item>();
+  cout << "data:" << endl;
   for (int i = 0; i < 10; i++)
   {
-    backpack_item item(rand() % 10 + 1, 1);
-    items->Append(item);
+    item newItem(rand() % 10 + 1, rand() % 10 + 1);
+    items->Append(newItem);
+    cout << newItem << endl;
   }
 
-  cout << items;
-
-  limit lmt;
-
-  solutionTree<backpack_item, wayStats, limit> tree(items, lmt, _func);
+  solutionTree<item> tree(items);
   
 }
 
-ostream& operator<< (ostream& os, const backpack_item& item)
+ostream& operator<< (ostream& os, const item& item)
 {
-  os << item.cost << " : " << item.volume << endl;
+  os << "item// " << item.cost << " : " << item.volume;
   return os;
-}
-
-ostream& operator<< (ostream& os, Sequence<backpack_item>* Seq)
-{
-  for (int i = 0; i < Seq->GetLength(); i++)
-  {
-    os << "id: " << i+1 << " : cost: " << Seq->Get(i).cost << " : volume: " << Seq->Get(i).volume << endl;
-  }
-  return os;
-}
-
-ostream& operator<< (ostream &os, const wayStats& stat)
-{
-  os << "Cost: " << stat.cost << " : Volume: " << stat.volume << endl;
-  return os;
-}
-
-wayStats func(const wayStats& stat, const backpack_item& obj)
-{
-  wayStats newStat;
-  newStat.cost = stat.cost + obj.cost;
-  newStat.volume = stat.volume + obj.volume;
-  return newStat;
 }

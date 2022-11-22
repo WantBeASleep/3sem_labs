@@ -1,29 +1,38 @@
 #pragma once
 #include <iostream>
+#include <string>
 using namespace std;
 
 #include "../sequence/sequence.hpp"
 #include "../sequence/arraySequence.hpp"
 
+/*
+  wayStats хоть и базируется на классе елемента, но отражает статистику ветки дерева
+  в EType методы 
+   Better - сравнивает 2 EType
+   GetWayStat - возвращает EType с суммироваными статами текущего и входящего EType
+   InLimit - чекает на предел сумму текущих статов и нового Etype
+   cout для EType
+*/
 
-template <typename EType, typename Stats>
+template <typename EType>
 class solutionNode
 {
   public:
     EType key;
-    solutionNode<EType, Stats>* prev;
-    Sequence<solutionNode<EType, Stats>*>* leaves;
+    solutionNode<EType>* prev;
+    Sequence<solutionNode<EType>*>* leaves;
     
-    Stats wayStats;
+    EType wayStats;
 
     solutionNode()
     {
-      leaves = new ArraySequence<solutionNode<EType, Stats>*>();
+      leaves = new ArraySequence<solutionNode<EType>*>();
     }
 
-    solutionNode(const EType& key, solutionNode<EType, Stats>* prev, const Stats& wayStats) :  key(key), wayStats(wayStats)
+    solutionNode(const EType& key, solutionNode<EType>* prev, const EType& wayStats) :  key(key), wayStats(wayStats)
     {
-      leaves = new ArraySequence<solutionNode<EType, Stats>*>();
+      leaves = new ArraySequence<solutionNode<EType>*>();
       this->prev = prev;
     }
 
@@ -33,98 +42,75 @@ class solutionNode
     }
 };
 
-template <typename EType, typename Stats>
-class solution
-{
-  public:
-    Stats cfg;
-    solutionNode<EType, Stats>* ptr;
-
-    void checkWay(solutionNode<EType, Stats>* ptr)
-    {
-      if (ptr->wayStats > cfg)
-      {
-        cfg = ptr->wayStats;
-        this->ptr = ptr;
-      }
-    }  
-
-    void getAnswer()
-    {
-      cout << cfg;
-
-      solutionNode<EType, Stats>* ptr2 = ptr;
-
-      while (ptr2->prev)
-      {
-        cout << ptr2->key;
-        ptr2 = ptr2->prev;
-      }
-    }
-
-};
-
-template <typename EType, typename Stats, typename limit>
+template <typename EType>
 class solutionTree
 {
   private:
-    solutionNode<EType, Stats>* root;
-    solution<EType, Stats> answer;
+    solutionNode<EType>* root;
+    solutionNode<EType>* answer;
     Sequence<EType>* data;
-    limit lmt;
-    Stats (*func)(const Stats& stat, const EType& obj);
 
-
-    void addLeaves(solutionNode<EType, Stats>* ptr, Sequence<EType>* options)
+    void addLeaves(solutionNode<EType>* ptr, Sequence<EType>* options)
     {
       if (!options->GetLength())
       {
-        answer.checkWay(ptr);
+        if (!answer) answer = ptr; // для первого равно
+        else if (answer->key.Better(ptr->key)) answer = ptr;
         return;
       }
 
       for (int i = 0; i < options->GetLength(); i++)
       {
-        Stats node_stat = func(ptr->wayStats, options->Get(i));
-
-        solutionNode<EType, Stats>* node = new solutionNode<EType, Stats>(options->Get(i), ptr, node_stat);
-
-        Sequence<EType>* node_opt = new ArraySequence<EType>();
+        EType newNodeWayStat = ptr->wayStats.GetWayStat(options->Get(i));
+        solutionNode<EType>* newNode = new solutionNode<EType>(options->Get(i), ptr, newNodeWayStat);
+                
+        Sequence<EType>* newNodeOptions = new ArraySequence<EType>();
         for (int j = 0; j < options->GetLength(); j++)
         {
-          if (i != j && lmt.check(ptr->wayStats, options->Get(j)))
+          if (i != j && newNodeWayStat.InLimit(options->Get(j)))
           {
-            node_opt->Append(options->Get(j));
+            newNodeOptions->Append(options->Get(j));
           }
         }
+        ptr->leaves->Append(newNode);
 
-        ptr->leaves->Append(node);
+        addLeaves(ptr->leaves->GetLast(), newNodeOptions);
 
-        addLeaves(ptr->leaves->GetLast(), node_opt);
-
-        delete node_opt;
+        delete newNodeOptions;
       }
       return;
     }
 
   public:
 
-    solutionTree(Sequence<EType>* data, limit lmt, Stats (*func)(const Stats&, const EType&))
+    solutionTree(Sequence<EType>* data)
     {
-      root = new solutionNode<EType, Stats>();
+      answer = nullptr;
+      root = new solutionNode<EType>();
       this->data = data->Copy();
-      this->lmt = lmt;
-      this->func = func;
+
+      Sequence<EType>* tmpData = new ArraySequence<EType>();
+      for (int i = 0; i < data->GetLength(); i++)
+      {
+        if (root->key.InLimit(data->Get(i))) tmpData->Append(data->Get(i));
+      }
+      delete this->data;
+      this->data = data;
 
       addLeaves(root, data);
 
-      answer.getAnswer();
+      cout << "END" << endl;
+      solutionNode<EType>* answerWayPtr = answer;
+      while (answerWayPtr->prev)
+      {
+        cout << answerWayPtr->key << endl;
+        answerWayPtr = answerWayPtr->prev;
+      }
     }
 
     ~solutionTree()
     {
-      // delete root;
-      // delete data;
+      // in progress
     }
     
 };
